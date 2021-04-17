@@ -26,6 +26,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var bestScoreLabelNode:SKLabelNode!
     let userDefaults:UserDefaults = UserDefaults.standard
     
+    var gameOverLabelNode:SKLabelNode!
+    
     // SKView上にシーンが表示されたときに呼ばれるメソッド
     override func didMove(to view: SKView) {
         // 重力を設定
@@ -352,6 +354,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         } else if contact.bodyA.categoryBitMask & groundCategory == groundCategory || contact.bodyA.categoryBitMask & wallCategory == wallCategory || contact.bodyB.categoryBitMask & groundCategory == groundCategory || contact.bodyB.categoryBitMask & wallCategory == wallCategory {
             // 壁か地面と衝突した
             print("GameOver")
+            
+            gameOverLabelNode = SKLabelNode()
+            gameOverLabelNode.fontColor = UIColor.red
+            gameOverLabelNode.position = CGPoint(x: self.frame.size.width / 2, y: self.frame.height / 2)
+            gameOverLabelNode.zPosition = 100 // 一番手前に表示する
+            gameOverLabelNode.horizontalAlignmentMode = SKLabelHorizontalAlignmentMode.center
+            gameOverLabelNode.fontName = "04b_19"
+            gameOverLabelNode.text = "Game Over!!!"
+            self.addChild(gameOverLabelNode)
 
             // スクロールを停止させる
             scrollNode.speed = 0
@@ -390,6 +401,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func restart() {
         
         bgm.run(SKAction.play())
+        
+        self.removeChildren(in: [gameOverLabelNode])
         
         score = 0
         scoreLabelNode.text = "Score: \(score)"
